@@ -11,7 +11,11 @@ router.post("/signup", async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
     const encryptedPassword = await bcrypt.hash(password, 10);
-    await Admin.create({ name, email, password: encryptedPassword });
+    await Admin.create({
+      name,
+      email,
+      password: encryptedPassword,
+    });
     return res.status(200).json({
       status: "OK",
       message: "User created successfully...",

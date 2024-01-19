@@ -1,12 +1,10 @@
 const mongoose = require("mongoose");
-const questionSchema = require("./questionSchema");
+const questionSchema = require("./questionSchema.js");
 
 const quizzSchema = new mongoose.Schema(
   {
     quizName: {
       type: String,
-      required: true,
-      unique: true,
     },
     quizzType: {
       type: String,

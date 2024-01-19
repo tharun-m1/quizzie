@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const quizzSchema = require("./quizzSchema");
+const quizzSchema = require("./quizzSchema.js");
 
 const adminSchema = new mongoose.Schema(
   {
