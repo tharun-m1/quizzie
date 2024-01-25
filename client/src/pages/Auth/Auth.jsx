@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import styles from "./auth.module.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { backendBaseUrl } from "../../constants";
 function Auth() {
-  const backendBaseUrl = "http://localhost:4000";
   const [btnClicked, setBtnClicked] = useState(1);
   const [signup, setSignup] = useState(true);
   const [login, setLogin] = useState(false);
@@ -100,7 +100,7 @@ function Auth() {
           .post(`${backendBaseUrl}/signup`, signupPayload)
           .then((res) => {
             if (res.data.status === "OK") {
-              alert("User Created Successfully");
+              alert("Account Created Successfully");
               setSignUpData((prevData) => clearFormData(prevData));
               setSignup(false);
               setLogin(true);
@@ -232,7 +232,7 @@ function Auth() {
                     value={
                       signup && errors.password
                         ? ""
-                        : login && signup == false
+                        : login && signup === false
                         ? loginData.password
                         : signupData.password
                     }

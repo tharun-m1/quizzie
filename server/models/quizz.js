@@ -3,7 +3,7 @@ const questionSchema = require("./questionSchema.js");
 
 const quizzSchema = new mongoose.Schema(
   {
-    quizName: {
+    quizzName: {
       type: String,
     },
     quizzType: {
@@ -16,10 +16,19 @@ const quizzSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    adminId: {
+      type: mongoose.Types.ObjectId,
+    },
+    timer: {
+      type: String,
+      enum: ["5", "10", "off"],
+      default: "off",
+      required: true,
+    },
   },
   {
     timestamps: true,
   }
 );
-
-module.exports = quizzSchema;
+const Quizz = new mongoose.model("Quizz", quizzSchema);
+module.exports = Quizz;

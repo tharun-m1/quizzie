@@ -8,6 +8,10 @@ const optionSchema = new mongoose.Schema({
   isAnswer: {
     type: Boolean,
   },
+  imgUrl: {
+    type: String,
+    default: "",
+  },
 });
 
 module.exports = optionSchema;

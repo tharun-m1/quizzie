@@ -3,11 +3,12 @@ const bodyParser = require("body-parser");
 require("dotenv").config();
 const mongoose = require("mongoose");
 const authRoutes = require("./routes/authRoutes");
+const quizzRoutes = require("./routes/quizzRoutes");
 const cors = require("cors");
 // ============================================================
 const app = express();
 app.use(cors());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.get("/", (req, res) => {
@@ -17,7 +18,7 @@ app.get("/", (req, res) => {
 });
 // ============================Routes==============================
 app.use("/", authRoutes);
-
+app.use("/", quizzRoutes);
 // ================================================================
 
 // ====================Error Handler===============================

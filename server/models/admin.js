@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const quizzSchema = require("./quizzSchema.js");
 
 const adminSchema = new mongoose.Schema(
   {
@@ -16,7 +15,6 @@ const adminSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    quizzes: [quizzSchema],
   },
   {
     timestamps: true,

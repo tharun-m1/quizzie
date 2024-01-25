@@ -4,6 +4,8 @@ const bcrypt = require("bcrypt");
 const Admin = require("../models/admin");
 const errorHandler = require("../utils/errorHandler");
 const jwt = require("jsonwebtoken");
+const isLoggedIn = require("../middleware/isLoggedIn");
+const verify = require("../middleware/verify");
 require("dotenv").config();
 // ================Sign Up========================================
 
@@ -59,5 +61,12 @@ router.post("/login", async (req, res, next) => {
 });
 
 // =================================================================
+// =========================== Verify ==============================
+router.post("/verify", verify, async (req, res, next) => {
+  return res.status(200).json({
+    status: "OK",
+    adminId: req.adminId,
+  });
+});
 
 module.exports = router;
