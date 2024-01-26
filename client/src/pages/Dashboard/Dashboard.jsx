@@ -9,6 +9,7 @@ import styles from "./dashboard.module.css";
 import QuizType from "../../components/Quizz/QuizType";
 import QuestionModal from "../../components/Quizz/QuestionModal";
 import Success from "../../components/Success/Success";
+import DeleteQuiz from "../../components/Delete/DeleteQuiz";
 function Dashboard() {
   const navigate = useNavigate();
   const [overview, setOverview] = useState(true);
@@ -18,7 +19,22 @@ function Dashboard() {
   const [questionsModal, setQuestionsModal] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
   const [quizLink, setQuizLink] = useState(null);
-
+  const [deleteQuiz, setDeleteQuiz] = useState(false);
+  const [quizId, setQuizId] = useState(null);
+  const [edit, setEdit] = useState(false);
+  const handleEdit = (state) => {
+    setEdit(state);
+    if (state) {
+      setQuizTypeModal(false);
+      setQuestionsModal(true);
+    }
+  };
+  const handleQuizId = (quizzId) => {
+    setQuizId(quizzId);
+  };
+  const handleDeleteQuiz = (state) => {
+    setDeleteQuiz(state);
+  };
   const handleQuizLink = (link) => {
     setQuizLink(link);
   };
@@ -56,6 +72,7 @@ function Dashboard() {
     setCreateQuizModal(false);
     setQuizTypeModal(false);
     setQuestionsModal(false);
+    setEdit(false);
     setQuizName("");
     setQuizType("");
   };
@@ -129,13 +146,17 @@ function Dashboard() {
                 marginTop: "3%",
               }}
             >
-              <Analytics />
+              <Analytics
+                handleEdit={handleEdit}
+                handleQuizId={handleQuizId}
+                handleDeleteQuiz={handleDeleteQuiz}
+              />
             </div>
           ) : (
             <h3>Loading...</h3>
           )}
         </div>
-        {createQuizModal || successModal ? (
+        {createQuizModal || successModal || deleteQuiz || edit ? (
           <div className={styles.modals}>
             {quizTypeModal ? (
               <QuizType
@@ -151,11 +172,13 @@ function Dashboard() {
             )}
             {questionsModal ? (
               <QuestionModal
+                edit={edit}
                 quizType={quizType}
                 quizName={quizName}
                 handleFinalCancel={handleFinalCancel}
                 handleSuccessModal={handleSuccessModal}
                 handleQuizLink={handleQuizLink}
+                quizId={quizId}
               />
             ) : (
               ""
@@ -165,6 +188,11 @@ function Dashboard() {
                 quizLink={quizLink}
                 handleSuccessModal={handleSuccessModal}
               />
+            ) : (
+              ""
+            )}
+            {deleteQuiz ? (
+              <DeleteQuiz quizId={quizId} handleDeleteQuiz={handleDeleteQuiz} />
             ) : (
               ""
             )}

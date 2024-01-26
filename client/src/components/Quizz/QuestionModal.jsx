@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./questionmodal.module.css";
 import add from "../../assets/add.png";
 import del from "../../assets/del.png";
@@ -11,6 +11,8 @@ function QuestionModal({
   quizName,
   handleSuccessModal,
   handleQuizLink,
+  edit,
+  quizId,
 }) {
   const [optionType, setOptionType] = useState("");
   const [showQuestionIndex, setShowQuestionIndex] = useState(0);
@@ -25,14 +27,82 @@ function QuestionModal({
   const [qArr, setQArr] = useState([
     { question: "", optionType: "", options: initailOptArr },
   ]);
+  const quizzId = quizId;
+  useEffect(() => {
+    if (edit) {
+      const jwToken = localStorage.getItem("jwToken");
+      if (!jwToken) {
+        return alert("Your are not LoggedIn");
+      }
+      const headers = {
+        "Content-Type": "application/json",
+        authorization: jwToken,
+      };
+      axios
+        .get(`${backendBaseUrl}/fetch/${quizzId}`, { headers: headers })
+        .then((res) => {
+          // setQArr(res.data.quizData.quesions);
+          setQArr(res.data.quizData[0].questions);
+          setTimer(res.data.quizData[0].timer);
+        })
+        .catch((err) => {
+          console.log(err);
+          return alert("Something went wrong in getting data");
+        });
+    }
+    // eslint-disable-next-line
+  }, []);
   const [correctAnsIndex, setCorrectAnsIndex] = useState(null);
-
+  const handleUpdateQuiz = async () => {
+    try {
+      const quizzId = quizId;
+      const jwToken = localStorage.getItem("jwToken");
+      if (!jwToken) {
+        return alert("You are not LoggedIn");
+      }
+      const headers = {
+        "Content-Type": "application/json",
+        authorization: jwToken,
+      };
+      // const payload = {question}
+      axios
+        .put(`${backendBaseUrl}/update-quizz/${quizzId}`, qArr, {
+          headers: headers,
+        })
+        .then((res) => {
+          const quizId = res.data.quizId;
+          handleFinalCancel();
+          handleSuccessModal(true);
+          handleQuizLink(`${frontEndBaseUrl}/quiz/${quizId}`);
+        })
+        .catch((err) => {
+          console.log(err);
+          alert("Something went wrong in updating quiz");
+        });
+    } catch (err) {
+      console.log(err);
+      alert("Something went wrong in updating quiz");
+    }
+  };
   const handleCreateQuiz = async () => {
     const quizzData = {
       quizzName: quizName,
       quizzType: quizType,
       questions: qArr,
     };
+    if (quizzData.quizzType === "qna") {
+      let ans = 0;
+      quizzData.questions.forEach((que) => {
+        const found = que.options.findIndex(
+          (op) => op.isAnswer === true && (op.value !== "" || op.imgUrl !== "")
+        );
+        if (found !== -1) {
+          ans++;
+        }
+      });
+      if (!(ans === quizzData.questions.length))
+        return alert("All feilds are required");
+    }
     const jwToken = localStorage.getItem("jwToken");
     if (!jwToken) {
       return alert("You are not LoggedIn");
@@ -45,7 +115,7 @@ function QuestionModal({
       .post(`${backendBaseUrl}/create-quizz`, quizzData, { headers: headers })
       .then((res) => {
         if (res.data.status === "OK") {
-          console.log(res.data.quizId);
+          // console.log(res.data.quizId);
           const quizId = res.data.quizId;
           handleFinalCancel();
           handleSuccessModal(true);
@@ -310,7 +380,10 @@ function QuestionModal({
                     ""
                   )}
                   <input
-                    style={{ background: el.isAnswer ? "#60B84B" : "" }}
+                    style={{
+                      background: el.isAnswer ? "#60B84B" : "",
+                      color: el.isAnswer ? "white" : "",
+                    }}
                     // value={el.value}
                     value={
                       showQuestionIndex < qArr.length &&
@@ -407,10 +480,16 @@ function QuestionModal({
         <div className={styles.action}>
           <button onClick={handleCancel}>Cancel</button>
           <button
-            onClick={handleCreateQuiz}
+            onClick={() => {
+              if (edit) {
+                handleUpdateQuiz();
+              } else {
+                handleCreateQuiz();
+              }
+            }}
             style={{ background: "#60B84B", color: "white" }}
           >
-            Create Quiz
+            {edit ? "Update Quiz" : "Create Quiz"}
           </button>
         </div>
       </div>

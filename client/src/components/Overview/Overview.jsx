@@ -19,6 +19,7 @@ function Overview() {
       });
       let impressions = 0;
       let questions = 0;
+      // eslint-disable-next-line
       response.data.data.map((el) => {
         impressions += el.impressions;
         questions += el.questions;
@@ -88,7 +89,9 @@ function Overview() {
                 fontWeight: "600",
               }}
             >
-              {impressions}
+              {impressions > 1000
+                ? `${(impressions / 1000).toFixed(1)}K`
+                : impressions}
             </span>{" "}
             Total <br /> Impressions
           </div>

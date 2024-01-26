@@ -5,14 +5,29 @@ function Success({ handleSuccessModal, quizLink }) {
     <>
       <div className={styles.container}>
         <div className={styles.close}>
-          <button onClick={() => handleSuccessModal(false)}>X</button>
+          <button
+            onClick={() => {
+              handleSuccessModal(false);
+              window.location.reload();
+            }}
+          >
+            X
+          </button>
         </div>
         <h1>
           Congrats your Quiz is
           <br /> Published!
         </h1>
         <div className={styles.link}>{quizLink}</div>
-        <button className={styles.share}>Share</button>
+        <button
+          onClick={() => {
+            navigator.clipboard.writeText(quizLink);
+            alert("Link Copied..");
+          }}
+          className={styles.share}
+        >
+          Share
+        </button>
       </div>
     </>
   );

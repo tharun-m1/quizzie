@@ -4,8 +4,8 @@ import edit from "../../assets/edit.png";
 import del from "../../assets/del.png";
 import share from "../../assets/share.png";
 import axios from "axios";
-import { backendBaseUrl } from "../../constants";
-function Analytics() {
+import { backendBaseUrl, frontEndBaseUrl } from "../../constants";
+function Analytics({ handleDeleteQuiz, handleQuizId, handleEdit }) {
   const [quizArr, setQuizArr] = useState([]);
   async function getData() {
     try {
@@ -20,13 +20,31 @@ function Analytics() {
       setQuizArr(response.data.data);
     } catch (err) {
       console.log(err);
-      return alert("Something went wrong");
+      return alert("Something went wrong in getting data");
     }
   }
+  const handleEditQuiz = async (quizzId) => {
+    try {
+      handleEdit(true);
+      handleQuizId(quizzId); // using pre defined state;
+    } catch (err) {
+      console.log(err);
+      alert("something went wrong in editing");
+    }
+  };
+  const handleShare = async (quizzId) => {
+    try {
+      await navigator.clipboard.writeText(`${frontEndBaseUrl}/quiz/${quizzId}`);
+      alert("Link copied");
+    } catch (err) {
+      console.log(err);
+    }
+  };
   useEffect(() => {
     getData();
     // eslint-disable-next-line
   }, []);
+
   return (
     <>
       <div className={styles.container}>
@@ -50,16 +68,22 @@ function Analytics() {
                   <td> {quiz.impressions} </td>
                   <td>
                     <img
+                      onClick={() => handleEditQuiz(quiz.quizzId)}
                       style={{ cursor: "pointer", marginRight: "5px" }}
                       src={edit}
                       alt="edit"
                     />
                     <img
+                      onClick={() => {
+                        handleDeleteQuiz(true);
+                        handleQuizId(quiz.quizzId);
+                      }}
                       style={{ cursor: "pointer", marginRight: "5px" }}
                       src={del}
                       alt="delete"
                     />
                     <img
+                      onClick={() => handleShare(quiz.quizzId)}
                       style={{ cursor: "pointer", marginRight: "5px" }}
                       src={share}
                       alt="share"
