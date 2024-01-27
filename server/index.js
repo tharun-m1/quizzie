@@ -4,6 +4,7 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 const authRoutes = require("./routes/authRoutes");
 const quizzRoutes = require("./routes/quizzRoutes");
+const liveQuizRoutes = require("./routes/liveQuizRoutes");
 const cors = require("cors");
 // ============================================================
 const app = express();
@@ -19,6 +20,7 @@ app.get("/", (req, res) => {
 // ============================Routes==============================
 app.use("/", authRoutes);
 app.use("/", quizzRoutes);
+app.use("/", liveQuizRoutes);
 // ================================================================
 
 // ====================Error Handler===============================

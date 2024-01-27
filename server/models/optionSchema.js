@@ -12,6 +12,10 @@ const optionSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
+  votes: {
+    type: Number,
+    default: 0,
+  },
 });
 
 module.exports = optionSchema;

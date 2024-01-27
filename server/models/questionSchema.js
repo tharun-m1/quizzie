@@ -11,6 +11,18 @@ const questionSchema = new mongoose.Schema({
     enum: ["txt", "img", "txtimg"],
     required: true,
   },
+  attempted: {
+    type: Number,
+    default: 0,
+  },
+  correct: {
+    type: Number,
+    default: 0,
+  },
+  incorrect: {
+    type: Number,
+    default: 0,
+  },
   options: [optionSchema],
 });
 
