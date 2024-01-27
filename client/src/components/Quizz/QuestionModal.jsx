@@ -65,8 +65,12 @@ function QuestionModal({
         authorization: jwToken,
       };
       // const payload = {question}
+      const payload = {
+        timer: timer,
+        qArr,
+      };
       axios
-        .put(`${backendBaseUrl}/update-quizz/${quizzId}`, qArr, {
+        .put(`${backendBaseUrl}/update-quizz/${quizzId}`, payload, {
           headers: headers,
         })
         .then((res) => {
@@ -89,6 +93,7 @@ function QuestionModal({
       quizzName: quizName,
       quizzType: quizType,
       questions: qArr,
+      timer: timer,
     };
     if (quizzData.quizzType === "qna") {
       let ans = 0;
@@ -446,36 +451,40 @@ function QuestionModal({
               Add Option
             </button>
           </div>
-          <div className={styles.right}>
-            <div>Timer</div>
-            <button
-              style={{
-                background: timer === "5" ? "#D60000" : "",
-                color: timer === "5" ? "white" : "",
-              }}
-              onClick={() => setTimer("5")}
-            >
-              5 Sec
-            </button>
-            <button
-              style={{
-                background: timer === "10" ? "#D60000" : "",
-                color: timer === "10" ? "white" : "",
-              }}
-              onClick={() => setTimer("10")}
-            >
-              10 Sec
-            </button>
-            <button
-              style={{
-                background: timer === "off" ? "#D60000" : "",
-                color: timer === "off" ? "white" : "",
-              }}
-              onClick={() => setTimer("off")}
-            >
-              OFF
-            </button>
-          </div>
+          {quizType !== "poll" ? (
+            <div className={styles.right}>
+              <div>Timer</div>
+              <button
+                style={{
+                  background: timer === "5" ? "#D60000" : "",
+                  color: timer === "5" ? "white" : "",
+                }}
+                onClick={() => setTimer("5")}
+              >
+                5 Sec
+              </button>
+              <button
+                style={{
+                  background: timer === "10" ? "#D60000" : "",
+                  color: timer === "10" ? "white" : "",
+                }}
+                onClick={() => setTimer("10")}
+              >
+                10 Sec
+              </button>
+              <button
+                style={{
+                  background: timer === "off" ? "#D60000" : "",
+                  color: timer === "off" ? "white" : "",
+                }}
+                onClick={() => setTimer("off")}
+              >
+                OFF
+              </button>
+            </div>
+          ) : (
+            ""
+          )}
         </div>
         <div className={styles.action}>
           <button onClick={handleCancel}>Cancel</button>

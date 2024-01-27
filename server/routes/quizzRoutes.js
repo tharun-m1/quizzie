@@ -68,16 +68,24 @@ router.get("/quizz/:quizzId", async (req, res, next) => {
     questions.forEach((question) => {
       const modifiedOptions = [];
       question.options.forEach((op) => {
-        const { isAnswer, ...rest } = op._doc;
-        modifiedOptions.push(rest);
+        const { isAnswer, votes, ...rest } = op._doc;
+        modifiedOptions.push({ ...rest });
       });
       question.options = modifiedOptions;
-      modifiedQuestions.push(question);
+      const { attempted, correct, incorrect, optionType, ...restQues } =
+        question._doc;
+      modifiedQuestions.push(restQues);
     });
-
+    const data = {
+      quizName: quizz.quizzName,
+      timer: quizz.timer,
+      quizType: quizz.quizzType,
+      questions: modifiedQuestions,
+    };
+    // console.log(modifiedQuestions);
     return res.status(200).json({
       status: "OK",
-      data: modifiedQuestions,
+      data: data,
     });
   } catch (err) {
     console.log(err);
@@ -89,8 +97,7 @@ router.get("/quizz/:quizzId", async (req, res, next) => {
 router.put("/update-quizz/:quizzId", isLoggedIn, async (req, res, next) => {
   try {
     const { quizzId } = req.params;
-    const modifiedQuizz = req.body;
-    // console.log(modifiedQuizz);
+    const payload = req.body;
     const radminId = req.adminId;
     const query = {
       $and: [{ adminId: { $eq: radminId } }, { _id: { $eq: quizzId } }],
@@ -102,7 +109,8 @@ router.put("/update-quizz/:quizzId", isLoggedIn, async (req, res, next) => {
     if (!quiz) {
       return next(errorHandler(404, "Quizz Not Found"));
     }
-    quiz.questions = modifiedQuizz;
+    quiz.questions = payload.qArr;
+    quiz.timer = payload.timer;
     await quiz.save();
     return res.status(200).json({
       status: "OK",
@@ -145,9 +153,9 @@ router.get("/quizs", isLoggedIn, async (req, res, next) => {
 // =======================Fetch for edit =============================
 router.get("/fetch/:quizzId", isLoggedIn, async (req, res, next) => {
   try {
+    // console.log("fetch exec");
     const radminId = req.adminId;
     const { quizzId } = req.params;
-    // console.log("quizzId", quizzId);
     const query = {
       $and: [
         { adminId: { $eq: radminId } },
@@ -168,4 +176,15 @@ router.get("/fetch/:quizzId", isLoggedIn, async (req, res, next) => {
     next(err);
   }
 });
+// =======================Analysis=====================================
+// router.get("/analysis/:quizzId", isLoggedIn, async (req, res, next) => {
+//   try {
+
+//   } catch (err) {
+//     console.log(err);
+//     next(err);
+//   }
+// });
+
+//
 module.exports = router;

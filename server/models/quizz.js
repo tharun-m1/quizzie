@@ -23,7 +23,7 @@ const quizzSchema = new mongoose.Schema(
       type: String,
       enum: ["5", "10", "off"],
       default: "off",
-      required: true,
+      // required: true,
     },
   },
   {

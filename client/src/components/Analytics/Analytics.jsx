@@ -5,7 +5,12 @@ import del from "../../assets/del.png";
 import share from "../../assets/share.png";
 import axios from "axios";
 import { backendBaseUrl, frontEndBaseUrl } from "../../constants";
-function Analytics({ handleDeleteQuiz, handleQuizId, handleEdit }) {
+function Analytics({
+  handleDeleteQuiz,
+  handleQuizId,
+  handleEdit,
+  handleAnalysis,
+}) {
   const [quizArr, setQuizArr] = useState([]);
   async function getData() {
     try {
@@ -92,7 +97,14 @@ function Analytics({ handleDeleteQuiz, handleQuizId, handleEdit }) {
                   <td
                     style={{ textDecoration: "underline", cursor: "pointer" }}
                   >
-                    <span>Question Wise Analysis</span>
+                    <span
+                      onClick={() => {
+                        handleAnalysis(true);
+                        handleQuizId(quiz.quizzId);
+                      }}
+                    >
+                      Question Wise Analysis
+                    </span>
                   </td>
                 </tr>
               ))}

@@ -10,10 +10,12 @@ import QuizType from "../../components/Quizz/QuizType";
 import QuestionModal from "../../components/Quizz/QuestionModal";
 import Success from "../../components/Success/Success";
 import DeleteQuiz from "../../components/Delete/DeleteQuiz";
+import Analysis from "../../components/Analysis/Analysis";
 function Dashboard() {
   const navigate = useNavigate();
-  const [overview, setOverview] = useState(true);
-  const [analytics, setAnalytics] = useState(false);
+  const [overview, setOverview] = useState(true); // modified for analysis
+  const [analytics, setAnalytics] = useState(false); // set false after design
+  const [analysis, setAnalysis] = useState(true);
   const [createQuizModal, setCreateQuizModal] = useState(false);
   const [quizTypeModal, setQuizTypeModal] = useState(false);
   const [questionsModal, setQuestionsModal] = useState(false);
@@ -22,6 +24,10 @@ function Dashboard() {
   const [deleteQuiz, setDeleteQuiz] = useState(false);
   const [quizId, setQuizId] = useState(null);
   const [edit, setEdit] = useState(false);
+  const handleAnalysis = (state) => {
+    setAnalysis(state);
+    setAnalytics(!state);
+  };
   const handleEdit = (state) => {
     setEdit(state);
     if (state) {
@@ -150,10 +156,23 @@ function Dashboard() {
                 handleEdit={handleEdit}
                 handleQuizId={handleQuizId}
                 handleDeleteQuiz={handleDeleteQuiz}
+                handleAnalysis={handleAnalysis}
               />
             </div>
+          ) : analysis ? (
+            <div
+              style={{
+                width: "95%",
+                margin: "auto",
+                height: "90%",
+                marginTop: "3%",
+                // border: "1px solid red",
+              }}
+            >
+              <Analysis quizId={quizId} />
+            </div>
           ) : (
-            <h3>Loading...</h3>
+            ""
           )}
         </div>
         {createQuizModal || successModal || deleteQuiz || edit ? (
