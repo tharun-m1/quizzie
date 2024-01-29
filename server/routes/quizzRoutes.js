@@ -72,8 +72,7 @@ router.get("/quizz/:quizzId", async (req, res, next) => {
         modifiedOptions.push({ ...rest });
       });
       question.options = modifiedOptions;
-      const { attempted, correct, incorrect, optionType, ...restQues } =
-        question._doc;
+      const { attempted, correct, incorrect, ...restQues } = question._doc;
       modifiedQuestions.push(restQues);
     });
     const data = {

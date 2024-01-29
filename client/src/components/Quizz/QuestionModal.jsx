@@ -13,11 +13,13 @@ function QuestionModal({
   handleQuizLink,
   edit,
   quizId,
+  handleQuizType,
 }) {
   const [optionType, setOptionType] = useState("");
   const [showQuestionIndex, setShowQuestionIndex] = useState(0);
   const [question, setQuestion] = useState("");
   const [timer, setTimer] = useState(null);
+  const [quizTypeEdit, setQuizTypeEdit] = useState(""); //
   const initailOptArr = [
     { value: "", isAnswer: false, imgUrl: "" },
     { value: "", isAnswer: false, imgUrl: "" },
@@ -44,6 +46,9 @@ function QuestionModal({
           // setQArr(res.data.quizData.quesions);
           setQArr(res.data.quizData[0].questions);
           setTimer(res.data.quizData[0].timer);
+          setQuizTypeEdit(res.data.quizData[0].quizzType); //
+          // setQuizType(res.data.quizData.quizzType); //
+          // quizType = res.data.quizData.quizzType;
         })
         .catch((err) => {
           console.log(err);
@@ -106,7 +111,8 @@ function QuestionModal({
         }
       });
       if (!(ans === quizzData.questions.length))
-        return alert("All feilds are required");
+        return alert("All feilds are required in ans");
+    } else {
     }
     const jwToken = localStorage.getItem("jwToken");
     if (!jwToken) {
@@ -129,16 +135,17 @@ function QuestionModal({
       })
       .catch((err) => {
         console.log(err);
-        return alert("All Feilds are required");
+        return alert("All Feilds are required in catch");
       });
   };
   const addQuestion = (index) => {
     console.log(index);
     const updated = [...qArr];
     if (updated.length === 5) return;
-    if (updated[index].question === "") return alert("Question required");
-    if (updated[index].optionType === "") return alert("Option Type required");
-    const foundIdx = updated[index].options.findIndex(
+    if (updated[index - 1].question === "") return alert("Question required");
+    if (updated[index - 1].optionType === "")
+      return alert("Option Type required");
+    const foundIdx = updated[index - 1].options.findIndex(
       (el) => el.value === "" && el.imgUrl === ""
     );
     if (foundIdx !== -1) {
@@ -261,7 +268,7 @@ function QuestionModal({
               </div>
             ))}
             <div
-              onClick={() => addQuestion(qArr.length - 1)} //qArr.length - 1
+              onClick={() => addQuestion(qArr.length)} //qArr.length - 1
               style={{
                 marginTop: "10px",
                 cursor: "pointer",
@@ -401,11 +408,11 @@ function QuestionModal({
                     placeholder={
                       optionType === "txt" || optionType === "txtimg"
                         ? "Text"
-                        : "Image URL"
+                        : "Image Url"
                     }
                     className={styles.option}
                   />
-                  {optionType === "txtimg" ? (
+                  {optionType === "txtimg" && quizTypeEdit != "poll" ? (
                     <input
                       style={{ background: el.isAnswer ? "#60B84B" : "" }}
                       value={el.imgUrl}
@@ -451,7 +458,7 @@ function QuestionModal({
               Add Option
             </button>
           </div>
-          {quizType !== "poll" ? (
+          {quizType !== "poll" && quizTypeEdit !== "poll" ? (
             <div className={styles.right}>
               <div>Timer</div>
               <button

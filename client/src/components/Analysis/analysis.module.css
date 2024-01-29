@@ -66,7 +66,7 @@
   /* border: 1px solid red; */
   height: 45%;
   margin-top: 20px;
-  justify-content: space-between;
+  justify-content: space-evenly;
   text-align: center;
 }
 .stats div {
@@ -80,11 +80,11 @@
   /* border: 1px solid red; */
   height: 45%;
   margin-top: 20px;
-  justify-content: space-between;
+  justify-content: space-evenly;
   text-align: center;
 }
 .pollStats div {
-  width: 30%;
+  width: 20%;
   height: 100%;
   border-radius: 5px;
   background: #fff;

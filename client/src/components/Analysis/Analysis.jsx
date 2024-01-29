@@ -27,6 +27,7 @@ function Analysis({ quizId }) {
   };
   useEffect(() => {
     getData();
+    // eslint-disable-next-line
   }, []);
 
   return (
@@ -136,7 +137,10 @@ function Analysis({ quizId }) {
                                   marginLeft: "10px",
                                 }}
                               >
-                                option {index + 1}
+                                {/* option {index + 1} */}
+                                {ques.optionType === "txt"
+                                  ? op.value
+                                  : `option ${index + 1}`}
                               </span>
                             </div>
                           ))

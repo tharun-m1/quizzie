@@ -198,6 +198,7 @@ function Dashboard() {
                 handleSuccessModal={handleSuccessModal}
                 handleQuizLink={handleQuizLink}
                 quizId={quizId}
+                handleQuizType={handleQuizType} //
               />
             ) : (
               ""
