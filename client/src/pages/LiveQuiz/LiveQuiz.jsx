@@ -10,24 +10,32 @@ function LiveQuiz() {
   const [qArr, setQArr] = useState(null);
   const navigate = useNavigate();
   const [quizType, setQuizType] = useState(null);
-  const [timer, setTimer] = useState(null);
+  const [timer, setTimer] = useState("off");
   const { quizId } = useParams();
   const [optionType, setOptionType] = useState(null);
-  const [btnId, setBtnId] = useState(() => {
-    return localStorage.getItem("btnId");
-  });
-  const [showQuestion, setShowQuestion] = useState(() => {
-    return localStorage.getItem("currIdx") - "0";
-  });
-  // const [ansArr, setAnsArr] = useState([]);
-  const [ansArr, setAnsArr] = useState(() => {
-    return localStorage.getItem("ansArr");
-  });
+  // =======================================
+  // const [btnId, setBtnId] = useState(() => {
+  //   return localStorage.getItem("btnId");
+  // }); This one.
+  const [btnId, setBtnId] = useState(null);
+  // ========================================
+  // =====================================================
+  // const [showQuestion, setShowQuestion] = useState(() => {
+  //   return localStorage.getItem("currIdx") - "0";
+  // });
+  const [showQuestion, setShowQuestion] = useState(0);
+  // =========================================================
+  // ===============================================
+  const [ansArr, setAnsArr] = useState([]);
+  // const [ansArr, setAnsArr] = useState(() => {
+  //   return localStorage.getItem("ansArr");
+  // });
+  // =============================================
   const nextQuestion = () => {
     setBtnId(null);
-    localStorage.removeItem("btnId");
-    let prev = localStorage.getItem("currIdx") - "0";
-    const qId = qArr[prev]._id;
+    // localStorage.removeItem("btnId");
+    // let prev = localStorage.getItem("currIdx") - "0";
+    const qId = qArr[showQuestion]._id;
     const updated = [...ansArr];
     const answered = updated.findIndex((el) => {
       return el.questionId === qId;
@@ -38,20 +46,21 @@ function LiveQuiz() {
         ansSelectedId: null,
       };
       updated.push(ans);
-      localStorage.setItem("ansArr", JSON.stringify(updated));
+      // localStorage.setItem("ansArr", JSON.stringify(updated)); this one
       setAnsArr(updated);
     }
-    prev = prev - "0";
+    // prev = prev - "0"; this one
 
-    if (prev + 1 < qArr.length) {
-      localStorage.setItem("currIdx", prev + 1);
+    if (showQuestion + 1 < qArr.length) {
+      // localStorage.setItem("currIdx", prev + 1); this one
 
-      setShowQuestion(() => {
-        return localStorage.getItem("currIdx") - "0";
+      setShowQuestion((showQuestion) => {
+        // return localStorage.getItem("currIdx") - "0"; this one
+        return showQuestion + 1;
       });
       setOptionType(() => {
-        if (prev + 1 < qArr.length) {
-          return qArr[prev + 1].optionType;
+        if (showQuestion + 1 < qArr.length) {
+          return qArr[showQuestion + 1].optionType;
         }
       });
     } else {
@@ -60,14 +69,16 @@ function LiveQuiz() {
   };
 
   const handleSubmit = () => {
-    console.log(ansArr);
+    // console.log(ansArr);
     const quizzId = quizId;
     axios
       .post(`${backendBaseUrl}/${quizzId}/submit`, ansArr)
       .then((res) => {
         if (res.data.status === "OK") {
           // console.log("score", res.data.score);
-          localStorage.clear();
+          // localStorage.removeItem("currIdx");
+          // localStorage.removeItem("ansArr");
+          // localStorage.removeItem("btnId");
           if (quizType === "qna") {
             return navigate("/result", {
               state: {
@@ -91,20 +102,17 @@ function LiveQuiz() {
     try {
       const quizzId = quizId;
       const res = await axios.get(`${backendBaseUrl}/quizz/${quizzId}`);
+      console.log(res.data.data);
       setQArr(res.data.data.questions);
       setQuizType(res.data.data.quizType);
-      setTimer(() => {
-        return res.data.data.timer !== "off"
-          ? res.data.data.timer - "0"
-          : "off";
-      });
+      setTimer(res.data.data.timer);
       setOptionType(res.data.data.questions[0].optionType);
-      if (!localStorage.getItem("currIdx")) {
-        localStorage.setItem("currIdx", 0);
-      }
-      if (!localStorage.getItem("ansArr")) {
-        localStorage.setItem("ansArr", JSON.stringify([]));
-      }
+      // if (!localStorage.getItem("currIdx")) {
+      //   localStorage.setItem("currIdx", 0);
+      // }
+      // if (!localStorage.getItem("ansArr")) {
+      //   localStorage.setItem("ansArr", JSON.stringify([]));
+      // }
     } catch (err) {
       console.log(err);
       return alert("something went wrong in getting questions");
@@ -112,19 +120,21 @@ function LiveQuiz() {
   };
   useEffect(() => {
     getQuestions();
-    setShowQuestion(() => {
-      return localStorage.getItem("currIdx") - "0" || 0;
-    });
-    setAnsArr(() => {
-      return JSON.parse(localStorage.getItem("ansArr")) || [];
-    });
-    setBtnId(() => {
-      return localStorage.getItem("btnId")
-        ? localStorage.getItem("btnId") - "0"
-        : null;
-    });
+    // ==========================================
+    // setShowQuestion(() => {
+    //   return localStorage.getItem("currIdx") - "0" || 0;
+    // });
+    // setAnsArr(() => {
+    //   return JSON.parse(localStorage.getItem("ansArr")) || [];
+    // });
+    // setBtnId(() => {
+    //   return localStorage.getItem("btnId")
+    //     ? localStorage.getItem("btnId") - "0"
+    //     : null;
+    // });
     // time();
     // eslint-disable-next-line
+    // ============================================
   }, []);
   const getClass = () => {
     if (optionType === "txt") {
@@ -137,7 +147,7 @@ function LiveQuiz() {
   };
   function handleAnsSelect(btnId, qIdx, optId) {
     setBtnId(btnId);
-    localStorage.setItem("btnId", btnId);
+    // localStorage.setItem("btnId", btnId); this one
     const updated = [...ansArr];
     const answered = updated.findIndex(
       (el) => el.questionId === qArr[qIdx]._id
@@ -148,11 +158,11 @@ function LiveQuiz() {
         ansSelectedId: optId,
       };
       updated.push(ans);
-      localStorage.setItem("ansArr", JSON.stringify(updated));
+      // localStorage.setItem("ansArr", JSON.stringify(updated));
       setAnsArr(updated);
     } else {
       updated[answered].ansSelectedId = optId;
-      localStorage.setItem("ansArr", JSON.stringify(updated));
+      // localStorage.setItem("ansArr", JSON.stringify(updated));
     }
   }
 
@@ -164,10 +174,19 @@ function LiveQuiz() {
             {qArr ? `0${showQuestion + 1}/0${qArr.length}` : "loading.."}
           </div>
           <div className={styles.timer}>
-            {quizType === "poll" || timer === "off"
-              ? ""
-              : //
-                ""}
+            {quizType === "poll" || timer === "off" ? (
+              ""
+            ) : (
+              // ""
+              //
+              <Timer
+                nextQuestion={nextQuestion}
+                handleSubmit={handleSubmit}
+                arrlen={qArr ? qArr.length : 0}
+                timer={timer}
+                showQuestion={showQuestion}
+              />
+            )}
           </div>
         </div>
         <div className={styles.question}>
@@ -210,7 +229,7 @@ function LiveQuiz() {
                       </div>
                       <div style={{ flex: "60%" }}>
                         <img
-                          style={{ border: "1px solid red" }}
+                          // style={{ border: "1px solid red" }}
                           width={"100%"}
                           height={"100%"}
                           src={op.imgUrl || sample}

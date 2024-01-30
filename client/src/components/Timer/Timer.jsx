@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 
-function Timer({ nextQuestion, arrlen, handleSubmit, seconds }) {
-  const sec = 5;
+function Timer({ nextQuestion, arrlen, handleSubmit, timer, showQuestion }) {
+  const sec = timer - "0";
   // console.log(sec);
   const [countdown, setCountdown] = useState(sec);
   const intervalId = useRef();
+  const isLast = useRef(false);
   useEffect(() => {
     intervalId.current = setInterval(() => {
       setCountdown((countdown) => countdown - 1);
@@ -14,19 +15,29 @@ function Timer({ nextQuestion, arrlen, handleSubmit, seconds }) {
   }, []);
 
   useEffect(() => {
-    // console.log(arrlen);
     if (countdown <= 0) {
       clearInterval(intervalId.current);
       nextQuestion();
-      setCountdown(() => sec);
-      const currIdx = localStorage.getItem("currIdx") - "0";
-      intervalId.current = setInterval(() => {
-        setCountdown((countdown) => {
-          return countdown - 1;
-        });
-      }, 1000);
+      if (showQuestion < arrlen && isLast.current === false) {
+        if (showQuestion === arrlen - 2) {
+          isLast.current = true;
+        }
+        setCountdown(() => sec);
+        intervalId.current = setInterval(() => {
+          setCountdown((countdown) => {
+            return countdown - 1;
+          });
+        }, 1000);
+      } else {
+        clearInterval(intervalId.current);
+        handleSubmit();
+      }
     }
   }, [countdown]);
+
+  useEffect(() => {
+    setCountdown(sec);
+  }, [showQuestion]);
 
   return <div>{`00:${countdown < 10 ? `0${countdown}` : countdown}`}</div>;
 }
