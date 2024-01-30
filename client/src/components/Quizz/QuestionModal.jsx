@@ -412,7 +412,7 @@ function QuestionModal({
                     }
                     className={styles.option}
                   />
-                  {optionType === "txtimg" && quizTypeEdit != "poll" ? (
+                  {optionType === "txtimg" && quizTypeEdit !== "poll" ? (
                     <input
                       style={{ background: el.isAnswer ? "#60B84B" : "" }}
                       value={el.imgUrl}

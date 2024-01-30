@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "./livequiz.module.css";
 import { backendBaseUrl } from "../../constants";
@@ -6,7 +6,7 @@ import sample from "../../assets/sampleImage.png";
 import axios from "axios";
 import Timer from "../../components/Timer/Timer";
 function LiveQuiz() {
-  const ref = useRef(null);
+  // const ref = useRef(null);
   const [qArr, setQArr] = useState(null);
   const navigate = useNavigate();
   const [quizType, setQuizType] = useState(null);
@@ -135,6 +135,7 @@ function LiveQuiz() {
     // time();
     // eslint-disable-next-line
     // ============================================
+    // eslint-disable-next-line
   }, []);
   const getClass = () => {
     if (optionType === "txt") {

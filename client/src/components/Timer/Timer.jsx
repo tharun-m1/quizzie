@@ -12,6 +12,7 @@ function Timer({ nextQuestion, arrlen, handleSubmit, timer, showQuestion }) {
     }, 1000);
 
     return () => clearInterval(intervalId.current);
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -33,10 +34,12 @@ function Timer({ nextQuestion, arrlen, handleSubmit, timer, showQuestion }) {
         handleSubmit();
       }
     }
+    // eslint-disable-next-line
   }, [countdown]);
 
   useEffect(() => {
     setCountdown(sec);
+    // eslint-disable-next-line
   }, [showQuestion]);
 
   return <div>{`00:${countdown < 10 ? `0${countdown}` : countdown}`}</div>;

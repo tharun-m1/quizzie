@@ -9,6 +9,7 @@ function Result() {
     if (location.state) {
       setPoll(location.state.poll);
     }
+    // eslint-disable-next-line
   }, []);
   if (!location.state) {
     return <Navigate to="/not-found" />;
