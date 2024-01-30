@@ -1,5 +1,7 @@
 import React from "react";
 import styles from "./success.module.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 function Success({ handleSuccessModal, quizLink }) {
   return (
     <>
@@ -14,6 +16,7 @@ function Success({ handleSuccessModal, quizLink }) {
             X
           </button>
         </div>
+        <ToastContainer />
         <h1>
           Congrats your Quiz is
           <br /> Published!
@@ -22,7 +25,7 @@ function Success({ handleSuccessModal, quizLink }) {
         <button
           onClick={() => {
             navigator.clipboard.writeText(quizLink);
-            alert("Link Copied..");
+            return toast("Link Copied to Clipboard");
           }}
           className={styles.share}
         >

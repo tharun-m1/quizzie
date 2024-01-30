@@ -5,6 +5,8 @@ import del from "../../assets/del.png";
 import share from "../../assets/share.png";
 import axios from "axios";
 import { backendBaseUrl, frontEndBaseUrl } from "../../constants";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 function Analytics({
   handleDeleteQuiz,
   handleQuizId,
@@ -40,7 +42,7 @@ function Analytics({
   const handleShare = async (quizzId) => {
     try {
       await navigator.clipboard.writeText(`${frontEndBaseUrl}/quiz/${quizzId}`);
-      alert("Link copied");
+      return toast("Link copied");
     } catch (err) {
       console.log(err);
     }
@@ -53,6 +55,7 @@ function Analytics({
   return (
     <>
       <div className={styles.container}>
+        <ToastContainer />
         <div className={styles.title}>Quiz Analysis</div>
         <div className={styles.data}>
           <div className={styles.info}>
