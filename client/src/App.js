@@ -24,6 +24,18 @@ function App() {
             </div>
           }
         />
+        <Route
+          path="/*"
+          element={
+            <div>
+              {" "}
+              <h1>
+                404 <br />
+                Not Found
+              </h1>{" "}
+            </div>
+          }
+        />
       </Routes>
     </>
   );
