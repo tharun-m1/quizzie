@@ -10,7 +10,9 @@ function Timer({ nextQuestion, arrlen, handleSubmit, timer, showQuestion }) {
     intervalId.current = setInterval(() => {
       setCountdown((countdown) => countdown - 1);
     }, 1000);
-
+    if (arrlen === 1) {
+      isLast.current = true;
+    }
     return () => clearInterval(intervalId.current);
     // eslint-disable-next-line
   }, []);
