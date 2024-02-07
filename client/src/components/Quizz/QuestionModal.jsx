@@ -47,6 +47,7 @@ function QuestionModal({
           setQArr(res.data.quizData[0].questions);
           setTimer(res.data.quizData[0].timer);
           setQuizTypeEdit(res.data.quizData[0].quizzType); //
+          console.log(res.data.quizData[0].quizzType);
           // setQuizType(res.data.quizData.quizzType); //
           // quizType = res.data.quizData.quizzType;
         })
@@ -153,7 +154,7 @@ function QuestionModal({
       return alert("Fill all Options");
     }
 
-    if (quizType === "qna") {
+    if (quizType === "qna" || quizTypeEdit === "qna") {
       // return console.log("qna executed");
       const foundIdx = updated[index - 1].options.findIndex(
         (el) => el.isAnswer === true
@@ -319,7 +320,7 @@ function QuestionModal({
             <div>
               <input
                 checked={
-                  qArr[showQuestionIndex].optionType === "txt" ||
+                  qArr[showQuestionIndex]?.optionType === "txt" ||
                   optionType === "txt"
                 }
                 onClick={(e) => {
