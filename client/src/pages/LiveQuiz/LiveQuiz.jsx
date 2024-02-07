@@ -70,6 +70,7 @@ function LiveQuiz() {
 
   const handleSubmit = () => {
     // console.log(ansArr);
+    // return console.log("quiz submitted");
     const quizzId = quizId;
     axios
       .post(`${backendBaseUrl}/${quizzId}/submit`, ansArr)
@@ -178,8 +179,6 @@ function LiveQuiz() {
             {quizType === "poll" || timer === "off" ? (
               ""
             ) : (
-              // ""
-              //
               <Timer
                 nextQuestion={nextQuestion}
                 handleSubmit={handleSubmit}

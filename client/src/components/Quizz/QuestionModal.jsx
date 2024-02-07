@@ -139,22 +139,26 @@ function QuestionModal({
       });
   };
   const addQuestion = (index) => {
-    console.log(index);
+    // console.log(index);
     const updated = [...qArr];
     if (updated.length === 5) return;
     if (updated[index - 1].question === "") return alert("Question required");
     if (updated[index - 1].optionType === "")
       return alert("Option Type required");
+
     const foundIdx = updated[index - 1].options.findIndex(
       (el) => el.value === "" && el.imgUrl === ""
     );
     if (foundIdx !== -1) {
       return alert("Fill all Options");
     }
+
     if (quizType === "qna") {
-      const foundIdx = updated[index].options.findIndex(
+      // return console.log("qna executed");
+      const foundIdx = updated[index - 1].options.findIndex(
         (el) => el.isAnswer === true
       );
+      // return console.log("foundIdx", foundIdx);
       if (foundIdx === -1) {
         return alert("You must select an answer");
       }
@@ -164,8 +168,8 @@ function QuestionModal({
       optionType: "",
       options: initailOptArr,
     });
-    updated[index].question = question;
-    updated[index].optionType = optionType;
+    // updated[index].question = question;
+    // updated[index].optionType = optionType;
     setQArr(updated);
     setShowQuestionIndex(updated.length - 1);
     setQuestion("");
