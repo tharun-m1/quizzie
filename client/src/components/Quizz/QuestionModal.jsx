@@ -5,6 +5,7 @@ import del from "../../assets/del.png";
 import { backendBaseUrl } from "../../constants";
 import { frontEndBaseUrl } from "../../constants";
 import axios from "axios";
+import Loading from "../Loading/Loading";
 function QuestionModal({
   handleFinalCancel,
   quizType,
@@ -15,6 +16,7 @@ function QuestionModal({
   quizId,
   handleQuizType,
 }) {
+  const [loading, setLoading] = useState(false);
   const [optionType, setOptionType] = useState("");
   const [showQuestionIndex, setShowQuestionIndex] = useState(0);
   const [question, setQuestion] = useState("");
@@ -32,6 +34,7 @@ function QuestionModal({
   const quizzId = quizId;
   useEffect(() => {
     if (edit) {
+      setLoading(true);
       const jwToken = localStorage.getItem("jwToken");
       if (!jwToken) {
         return alert("Your are not LoggedIn");
@@ -47,12 +50,14 @@ function QuestionModal({
           setQArr(res.data.quizData[0].questions);
           setTimer(res.data.quizData[0].timer);
           setQuizTypeEdit(res.data.quizData[0].quizzType); //
-          console.log(res.data.quizData[0].quizzType);
+          // console.log(res.data.quizData[0].quizzType);
+          setLoading(false);
           // setQuizType(res.data.quizData.quizzType); //
           // quizType = res.data.quizData.quizzType;
         })
         .catch((err) => {
           console.log(err);
+          setLoading(false);
           return alert("Something went wrong in getting data");
         });
     }
@@ -61,6 +66,7 @@ function QuestionModal({
   const [correctAnsIndex, setCorrectAnsIndex] = useState(null);
   const handleUpdateQuiz = async () => {
     try {
+      setLoading(true);
       const quizzId = quizId;
       const jwToken = localStorage.getItem("jwToken");
       if (!jwToken) {
@@ -81,16 +87,19 @@ function QuestionModal({
         })
         .then((res) => {
           const quizId = res.data.quizId;
+          setLoading(false);
           handleFinalCancel();
           handleSuccessModal(true);
           handleQuizLink(`${frontEndBaseUrl}/quiz/${quizId}`);
         })
         .catch((err) => {
+          setLoading(false);
           console.log(err);
           alert("Something went wrong in updating quiz");
         });
     } catch (err) {
       console.log(err);
+      setLoading(false);
       alert("Something went wrong in updating quiz");
     }
   };
@@ -113,7 +122,6 @@ function QuestionModal({
       });
       if (!(ans === quizzData.questions.length))
         return alert("All feilds are required in ans");
-    } else {
     }
     const jwToken = localStorage.getItem("jwToken");
     if (!jwToken) {
@@ -123,12 +131,14 @@ function QuestionModal({
       "Content-type": "application/json",
       authorization: jwToken,
     };
+    setLoading(true);
     axios
       .post(`${backendBaseUrl}/create-quizz`, quizzData, { headers: headers })
       .then((res) => {
         if (res.data.status === "OK") {
           // console.log(res.data.quizId);
           const quizId = res.data.quizId;
+          setLoading(false);
           handleFinalCancel();
           handleSuccessModal(true);
           handleQuizLink(`${frontEndBaseUrl}/quiz/${quizId}`);
@@ -136,6 +146,7 @@ function QuestionModal({
       })
       .catch((err) => {
         console.log(err);
+        setLoading(false);
         return alert("All Feilds are required in catch");
       });
   };
@@ -208,6 +219,7 @@ function QuestionModal({
   const handleAddOpt = () => {
     console.log("add option");
     const updatedQArr = [...qArr];
+    if (updatedQArr[showQuestionIndex].options.length === 4) return;
     updatedQArr[showQuestionIndex].options.push({
       value: "",
       isAnswer: false,
@@ -238,6 +250,7 @@ function QuestionModal({
   return (
     <>
       <div className={styles.container}>
+        {loading ? <Loading /> : ""}
         <div className={styles.qContainer}>
           <div className={styles.qno}>
             {qArr.map((el, index) => (

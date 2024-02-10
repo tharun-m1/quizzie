@@ -5,8 +5,9 @@ import { backendBaseUrl } from "../../constants";
 import sample from "../../assets/sampleImage.png";
 import axios from "axios";
 import Timer from "../../components/Timer/Timer";
+import Loading from "../../components/Loading/Loading";
 function LiveQuiz() {
-  // const ref = useRef(null);
+  const [loading, setLoading] = useState(false);
   const [qArr, setQArr] = useState(null);
   const navigate = useNavigate();
   const [quizType, setQuizType] = useState(null);
@@ -72,14 +73,12 @@ function LiveQuiz() {
     // console.log(ansArr);
     // return console.log("quiz submitted");
     const quizzId = quizId;
+    setLoading(true);
     axios
       .post(`${backendBaseUrl}/${quizzId}/submit`, ansArr)
       .then((res) => {
+        setLoading(false);
         if (res.data.status === "OK") {
-          // console.log("score", res.data.score);
-          // localStorage.removeItem("currIdx");
-          // localStorage.removeItem("ansArr");
-          // localStorage.removeItem("btnId");
           if (quizType === "qna") {
             return navigate("/result", {
               state: {
@@ -95,6 +94,7 @@ function LiveQuiz() {
       })
       .catch((err) => {
         console.log(err);
+        setLoading(false);
         return alert("Something went wrong in submitting");
       });
     // console.log("Submitted");
@@ -171,6 +171,7 @@ function LiveQuiz() {
   return (
     <>
       <div className={styles.container}>
+        {loading ? <Loading /> : ""}
         <div className={styles.qnt}>
           <div className={styles.qno}>
             {qArr ? `0${showQuestion + 1}/0${qArr.length}` : "loading.."}

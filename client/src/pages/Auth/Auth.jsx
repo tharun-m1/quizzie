@@ -3,6 +3,8 @@ import styles from "./auth.module.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { backendBaseUrl } from "../../constants";
+import Loading from "../../components/Loading/Loading";
+
 function Auth() {
   const [btnClicked, setBtnClicked] = useState(1);
   const [signup, setSignup] = useState(true);
@@ -14,7 +16,7 @@ function Auth() {
     password: "",
     confirmPassword: "",
   });
-
+  const [loading, setLoading] = useState(false);
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
@@ -96,11 +98,13 @@ function Auth() {
         setErrors((prevData) => ({ ...prevData, password: true }));
       }
       if (goodToPost(syncErrors)) {
+        setLoading(true);
         axios
           .post(`${backendBaseUrl}/signup`, signupPayload)
           .then((res) => {
             if (res.data.status === "OK") {
               alert("Account Created Successfully");
+              setLoading(false);
               setSignUpData((prevData) => clearFormData(prevData));
               setSignup(false);
               setLogin(true);
@@ -110,19 +114,23 @@ function Auth() {
           .catch((err) => {
             setSignUpData((prevData) => clearFormData(prevData));
             if (err.response.data.status >= 500) {
+              setLoading(false);
               return alert("User already Exists/ something went wrong");
             }
           });
       }
     } else if (login === true) {
+      setLoading(true);
       axios
         .post(`${backendBaseUrl}/login`, loginData)
         .then((res) => {
           setLoginData(() => clearFormData(loginData));
           localStorage.setItem("jwToken", res.data.jwToken);
+          setLoading(false);
           navigate("/dashboard");
         })
         .catch((err) => {
+          setLoading(false);
           if (err.response.data.status === 404) {
             return alert("User doesn't exist");
           } else if (err.response.data.status === 401) {
@@ -136,6 +144,7 @@ function Auth() {
   return (
     <>
       <div className={styles.container}>
+        {loading ? <Loading /> : ""}
         <div className={styles.title}>QUIZZIE</div>
         <div className={styles.buttonsContainer}>
           <button
@@ -161,16 +170,18 @@ function Auth() {
               <div>
                 <div
                   style={{
-                    flex: "30%",
+                    flex: "40%",
                     justifyContent: "flex-end",
                     display: signup ? "" : "none",
+                    fontSize: "1em", // mod
+                    // border: "1px solid red",
                   }}
                 >
                   Name
                 </div>
                 <div
                   style={{
-                    flex: "70%",
+                    flex: "60%",
                     justifyContent: "flex-end",
                   }}
                 >
@@ -191,7 +202,7 @@ function Auth() {
               <div>
                 <div
                   style={{
-                    flex: "30%",
+                    flex: "40%",
                     justifyContent: "flex-end",
                   }}
                 >
@@ -199,7 +210,7 @@ function Auth() {
                 </div>
                 <div
                   style={{
-                    flex: "70%",
+                    flex: "60%",
                     justifyContent: "flex-end",
                   }}
                 >
@@ -215,7 +226,7 @@ function Auth() {
               <div>
                 <div
                   style={{
-                    flex: "30%",
+                    flex: "40%",
                     justifyContent: "flex-end",
                   }}
                 >
@@ -223,7 +234,7 @@ function Auth() {
                 </div>
                 <div
                   style={{
-                    flex: "70%",
+                    flex: "60%",
                     justifyContent: "flex-end",
                   }}
                 >
@@ -249,16 +260,19 @@ function Auth() {
               <div>
                 <div
                   style={{
-                    flex: "30%",
+                    flex: "40%",
                     justifyContent: "flex-end",
-                    display: signup ? "block" : "none",
+                    display: signup ? "flex" : "none",
+                    // fontSize: "0.9em", // mod
+                    wordBreak: "normal",
+                    // border: "1px solid red",
                   }}
                 >
                   Confirm Password
                 </div>
                 <div
                   style={{
-                    flex: "70%",
+                    flex: "60%",
                     justifyContent: "flex-end",
                   }}
                 >
