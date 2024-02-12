@@ -21,6 +21,7 @@ function Timer({ nextQuestion, arrlen, handleSubmit, timer, showQuestion }) {
     if (countdown <= 0) {
       clearInterval(intervalId.current);
       nextQuestion();
+      console.log(showQuestion);
       if (showQuestion < arrlen && isLast.current === false) {
         if (showQuestion === arrlen - 2) {
           isLast.current = true;
@@ -41,6 +42,9 @@ function Timer({ nextQuestion, arrlen, handleSubmit, timer, showQuestion }) {
 
   useEffect(() => {
     setCountdown(sec);
+    if (showQuestion === arrlen - 2) {
+      isLast.current = true;
+    }
     // eslint-disable-next-line
   }, [showQuestion]);
 
