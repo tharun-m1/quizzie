@@ -42,7 +42,7 @@ function Timer({ nextQuestion, arrlen, handleSubmit, timer, showQuestion }) {
 
   useEffect(() => {
     setCountdown(sec);
-    if (showQuestion === arrlen - 2) {
+    if (showQuestion === arrlen - 1) {
       isLast.current = true;
     }
     // eslint-disable-next-line
